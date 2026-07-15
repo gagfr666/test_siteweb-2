@@ -1,6 +1,6 @@
-# Site de Test
+# Volt Fiable — Site électricien (démo)
 
-Site web ultra simple pour faire des tests.
+Site vitrine de test pour un électricien résidentiel/commercial.
 
 ## Utilisation
 
@@ -8,4 +8,10 @@ Ouvrir `index.html` dans un navigateur.
 
 ## GitHub Pages
 
-Activer GitHub Pages sur la branche `main`, dossier racine.
+1. Push ce repo sur GitHub.
+2. Settings → Pages → Source: branche `main`, dossier `/root`.
+3. Site accessible sur `tonuser.github.io/nom-du-repo`.
+
+## Contenu
+
+Site fictif — coordonnées, avis clients et licence RBQ sont des exemples, pas des vraies données.

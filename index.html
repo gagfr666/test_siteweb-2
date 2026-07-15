@@ -2,35 +2,535 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Site de Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volt Fiable — Électricien résidentiel &amp; commercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-  h1 { color: #333; }
-  button { padding: 8px 16px; margin: 5px; cursor: pointer; }
-  input { padding: 6px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-  #output { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 6px; min-height: 30px; }
+  :root {
+    --bg: #14171c;
+    --surface: #1d2129;
+    --surface-2: #262b35;
+    --copper: #c87f3c;
+    --copper-bright: #e0a05e;
+    --hazard: #f2c230;
+    --text: #edeef0;
+    --muted: #8a919c;
+    --line: #323844;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3 { font-family: 'Archivo Black', sans-serif; font-weight: 400; margin: 0; }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  header {
+    position: sticky;
+    top: 0;
+    background: rgba(20,23,28,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+    z-index: 100;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-bolt { color: var(--hazard); }
+  nav ul { list-style: none; display: flex; gap: 28px; margin: 0; padding: 0; }
+  nav a { text-decoration: none; color: var(--muted); font-size: 0.92rem; font-weight: 500; transition: color 0.2s; }
+  nav a:hover, nav a:focus-visible { color: var(--text); }
+  .nav-cta {
+    background: var(--copper);
+    color: #14171c;
+    padding: 10px 18px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--copper-bright); }
+  .menu-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+
+  /* Hero */
+  .hero {
+    padding: 90px 24px 70px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-grid {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 50px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--hazard);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--hazard);
+    display: inline-block;
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--hazard);
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--copper); }
+  .hero p {
+    color: var(--muted);
+    font-size: 1.08rem;
+    max-width: 480px;
+    margin-bottom: 30px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--copper);
+    color: #14171c;
+    padding: 14px 26px;
+    border-radius: 3px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.95rem;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--copper-bright); transform: translateY(-1px); }
+  .btn-secondary {
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 14px 26px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--copper); }
+
+  /* Breaker panel signature element */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px;
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .panel-header .mono { color: var(--muted); font-size: 0.75rem; letter-spacing: 1px; }
+  .breaker-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 4px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+  .breaker-row:last-child { border-bottom: none; }
+  .breaker-label { display: flex; align-items: center; gap: 10px; }
+  .breaker-num { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 0.78rem; width: 20px; }
+  .switch {
+    width: 34px; height: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    background: #3ecf6e;
+    border-radius: 50%;
+    top: 1px; right: 2px;
+    box-shadow: 0 0 6px rgba(62,207,110,0.7);
+  }
+
+  /* Sections */
+  section { padding: 80px 0; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--copper);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 40px; max-width: 600px; }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .service-card {
+    background: var(--bg);
+    padding: 30px 26px;
+    transition: background 0.2s;
+  }
+  .service-card:hover { background: var(--surface); }
+  .service-num { font-family: 'JetBrains Mono', monospace; color: var(--copper); font-size: 0.85rem; margin-bottom: 14px; display: block; }
+  .service-card h3 { font-size: 1.05rem; font-family: 'Inter', sans-serif; font-weight: 700; margin-bottom: 10px; }
+  .service-card p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+  .stats-band {
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+  }
+  .stat { padding: 40px 20px; border-left: 1px solid var(--line); }
+  .stat:first-child { border-left: none; }
+  .stat-num { font-family: 'Archivo Black', sans-serif; font-size: 2.2rem; color: var(--hazard); }
+  .stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
+
+  .process-list { display: flex; flex-direction: column; gap: 0; max-width: 700px; }
+  .process-step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .process-step:first-child { padding-top: 0; }
+  .process-step-num { font-family: 'JetBrains Mono', monospace; color: var(--copper); font-size: 1.1rem; }
+  .process-step h3 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.02rem; margin-bottom: 6px; }
+  .process-step p { color: var(--muted); margin: 0; font-size: 0.92rem; }
+
+  .quote-block {
+    background: var(--surface);
+    border-left: 3px solid var(--hazard);
+    padding: 28px 30px;
+    border-radius: 0 6px 6px 0;
+    max-width: 640px;
+  }
+  .quote-block p { font-size: 1.05rem; margin: 0 0 14px; }
+  .quote-cite { color: var(--muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; }
+
+  .contact-section {
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+  .contact-info h3 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+  .contact-info p { color: var(--muted); margin: 0 0 24px; font-size: 0.92rem; }
+  .contact-line { display: flex; gap: 12px; margin-bottom: 14px; font-size: 0.92rem; align-items: baseline; }
+  .contact-line .mono { color: var(--copper); font-size: 0.78rem; width: 90px; flex-shrink: 0; }
+
+  form { display: flex; flex-direction: column; gap: 14px; }
+  label { font-size: 0.82rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; }
+  input, textarea, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 3px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--copper);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  button[type="submit"] {
+    background: var(--copper);
+    color: #14171c;
+    border: none;
+    padding: 14px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: 'Inter', sans-serif;
+  }
+  button[type="submit"]:hover { background: var(--copper-bright); }
+  .form-note { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+  footer {
+    padding: 30px 0;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  footer .mono { color: #545b66; }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(3) { border-left: none; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    nav ul { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+
+  :focus-visible { outline: 2px solid var(--hazard); outline-offset: 2px; }
 </style>
 </head>
 <body>
 
-<h1>Site de Test#2</h1>
+<header>
+  <div class="nav">
+    <div class="logo"><span class="logo-bolt">⚡</span>Volt Fiable</div>
+    <nav>
+      <ul>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#processus">Processus</a></li>
+        <li><a href="#avis">Avis</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="nav-cta">Demander une soumission</a>
+  </div>
+</header>
 
-<input type="text" id="txt" placeholder="Écris quelque chose...">
-<button onclick="afficher()">Afficher</button>
-<button onclick="effacer()">Effacer</button>
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Disponible 24/7 — urgences électriques</div>
+      <h1>Votre installation électrique,<br>mise <span>sous tension</span> en toute sécurité.</h1>
+      <p>Électriciens certifiés pour le résidentiel et le commercial. Panneaux, bornes de recharge, rénovations et dépannage — un travail propre, aux normes, du premier au dernier fil.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Obtenir une soumission gratuite</a>
+        <a href="#services" class="btn-secondary">Voir les services</a>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <span>Panneau principal</span>
+        <span class="mono">200A · CERTIFIÉ</span>
+      </div>
+      <div class="breaker-row">
+        <div class="breaker-label"><span class="breaker-num">01</span>Éclairage résidentiel</div>
+        <div class="switch"></div>
+      </div>
+      <div class="breaker-row">
+        <div class="breaker-label"><span class="breaker-num">02</span>Borne de recharge VE</div>
+        <div class="switch"></div>
+      </div>
+      <div class="breaker-row">
+        <div class="breaker-label"><span class="breaker-num">03</span>Mise à niveau de panneau</div>
+        <div class="switch"></div>
+      </div>
+      <div class="breaker-row">
+        <div class="breaker-label"><span class="breaker-num">04</span>Circuits commerciaux</div>
+        <div class="switch"></div>
+      </div>
+      <div class="breaker-row">
+        <div class="breaker-label"><span class="breaker-num">05</span>Dépannage d'urgence</div>
+        <div class="switch"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div id="output"></div>
+<section id="services">
+  <div class="wrap">
+    <div class="section-label">Ce qu'on fait</div>
+    <h2 class="section-title">Des services électriques pour chaque circuit de votre bâtiment.</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-num">01</span>
+      <h3>Installation résidentielle</h3>
+      <p>Câblage neuf, prises, luminaires et mises aux normes pour maisons et rénovations.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">02</span>
+      <h3>Mise à niveau de panneau</h3>
+      <p>Passage à 100A, 200A ou plus pour suivre la demande électrique de votre foyer.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">03</span>
+      <h3>Bornes de recharge VE</h3>
+      <p>Installation certifiée de bornes niveau 2, dimensionnées pour votre panneau.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">04</span>
+      <h3>Électricité commerciale</h3>
+      <p>Éclairage, circuits dédiés et entretien pour commerces et bâtiments locatifs.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">05</span>
+      <h3>Dépannage d'urgence</h3>
+      <p>Panne, disjoncteur qui saute, odeur de brûlé — intervention rapide 24/7.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">06</span>
+      <h3>Inspection &amp; conformité</h3>
+      <p>Évaluation complète de votre installation avant achat, vente ou rénovation.</p>
+    </div>
+  </div>
+</section>
 
-<script>
-function afficher() {
-  const val = document.getElementById('txt').value;
-  document.getElementById('output').innerText = val || "(vide)";
-}
-function effacer() {
-  document.getElementById('txt').value = "";
-  document.getElementById('output').innerText = "";
-}
-</script>
+<section class="stats-band">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-num">14</div><div class="stat-label">ans d'expérience</div></div>
+      <div class="stat"><div class="stat-num">1 200+</div><div class="stat-label">installations complétées</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">service d'urgence</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">travail garanti</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="processus">
+  <div class="wrap">
+    <div class="section-label">Comment ça marche</div>
+    <h2 class="section-title">Du premier appel à la mise sous tension.</h2>
+    <div class="process-list">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <div><h3>Appel &amp; évaluation</h3><p>Décrivez votre besoin. On planifie une visite ou une estimation à distance.</p></div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <div><h3>Soumission détaillée</h3><p>Prix fixe, matériel inclus, aucune surprise sur la facture finale.</p></div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <div><h3>Travaux &amp; conformité</h3><p>Installation aux normes en vigueur, avec permis si requis.</p></div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <div><h3>Vérification finale</h3><p>Test de chaque circuit avant de quitter le chantier.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="avis">
+  <div class="wrap">
+    <div class="section-label">Avis clients</div>
+    <h2 class="section-title">Ce que disent les gens qu'on a branchés.</h2>
+    <div class="quote-block">
+      <p>« Panneau remplacé en une journée, propre et sans surprise sur le prix. Je referais affaire avec eux sans hésiter. »</p>
+      <div class="quote-cite">— Client résidentiel, Contrecoeur</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="section-label">Contact</div>
+        <h3>Parlons de votre projet</h3>
+        <p>Réponse sous 24h ouvrables. Urgence ? Appelez directement.</p>
+        <div class="contact-line"><span class="mono">TÉL</span><span>(450) 555-0142</span></div>
+        <div class="contact-line"><span class="mono">COURRIEL</span><span>info@voltfiable.test</span></div>
+        <div class="contact-line"><span class="mono">ZONE</span><span>Rive-Sud de Montréal</span></div>
+        <div class="contact-line"><span class="mono">LICENCE</span><span>RBQ-0000-0000-00</span></div>
+      </div>
+      <form onsubmit="event.preventDefault(); this.reset(); document.getElementById('confirm').style.display='block';">
+        <div class="field">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" required>
+        </div>
+        <div class="field">
+          <label for="tel">Téléphone</label>
+          <input type="tel" id="tel" required>
+        </div>
+        <div class="field">
+          <label for="service">Service recherché</label>
+          <select id="service">
+            <option>Installation résidentielle</option>
+            <option>Mise à niveau de panneau</option>
+            <option>Borne de recharge VE</option>
+            <option>Électricité commerciale</option>
+            <option>Urgence</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Décrivez votre projet..."></textarea>
+        </div>
+        <button type="submit">Envoyer la demande</button>
+        <p class="form-note" id="confirm" style="display:none;">Formulaire de test — aucune donnée n'est envoyée.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">Volt Fiable</span> — Site de démonstration, à des fins de test uniquement.
+  </div>
+</footer>
 
 </body>
 </html>
