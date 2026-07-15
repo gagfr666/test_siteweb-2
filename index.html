@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Site de Test</title>
+<style>
+  body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+  h1 { color: #333; }
+  button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+  input { padding: 6px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+  #output { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 6px; min-height: 30px; }
+</style>
+</head>
+<body>
+
+<h1>Site de Test</h1>
+
+<input type="text" id="txt" placeholder="Écris quelque chose...">
+<button onclick="afficher()">Afficher</button>
+<button onclick="effacer()">Effacer</button>
+
+<div id="output"></div>
+
+<script>
+function afficher() {
+  const val = document.getElementById('txt').value;
+  document.getElementById('output').innerText = val || "(vide)";
+}
+function effacer() {
+  document.getElementById('txt').value = "";
+  document.getElementById('output').innerText = "";
+}
+</script>
+
+</body>
+</html>
